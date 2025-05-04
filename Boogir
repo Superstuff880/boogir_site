@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Boogle Search</title>
+  <link href="https://fonts.googleapis.com/css2?family=Antic&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Antic', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background: white;
+    }
+    .logo {
+      font-size: 64px;
+      font-weight: bold;
+    }
+    .logo span:nth-child(1) { color: orange; }  /* B */
+    .logo span:nth-child(2) { color: yellow; }  /* o */
+    .logo span:nth-child(3) { color: blue; }    /* o */
+    .logo span:nth-child(4) { color: green; }   /* g */
+    .logo span:nth-child(5) { color: red; }     /* l */
+    .logo span:nth-child(6) { color: orange; }  /* e */
+
+    .search-container {
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      border: 1px solid #ccc;
+      border-radius: 24px;
+      padding: 10px 20px;
+      width: 500px;
+    }
+    .search-input {
+      flex-grow: 1;
+      border: none;
+      font-size: 16px;
+      outline: none;
+      font-family: 'Antic', sans-serif;
+    }
+    .icons {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .icon {
+      cursor: pointer;
+      font-size: 20px;
+    }
+    #results {
+      margin-top: 30px;
+      width: 600px;
+    }
+  </style>
+</head>
+<body>
+  <div class="logo">
+    <span>B</span><span>o</span><span>o</span><span>g</span><span>l</span><span>e</span>
+  </div>
+
+  <div class="search-container">
+    <input type="text" class="search-input" id="query" placeholder="Search GitHub with Boogle">
+    <div class="icons">
+      <span class="icon">🎤</span>
+      <span class="icon">📷</span>
+    </div>
+  </div>
+
+  <div id="results"></div>
+
+  <script>
+    document.querySelector("#query").addEventListener("keypress", function(e) {
+      if (e.key === "Enter") {
+        const query = e.target.value;
+        fetch(`/search?q=site:github.com+${encodeURIComponent(query)}`)
+          .then(res => res.json())
+          .then(data => {
+            const results = document.getElementById("results");
+            results.innerHTML = data.results.map(r => `
+              <div style="margin-bottom: 20px">
+                <a href="${r.link}" target="_blank"><h3>${r.title}</h3></a>
+                <p>${r.snippet}</p>
+              </div>
+            `).join('');
+          });
+      }
+    });
+  </script>
+</body>
+</html>
